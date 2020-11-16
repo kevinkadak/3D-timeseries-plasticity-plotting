@@ -19,15 +19,15 @@ load_data <- function(arg1_filename) {
 
   # Render the read.csv object into a dataframe, ensuring NA values are excluded
   signal_columns <- read.table(arg1_filename, nrows = 1, skip = 70) # Grab column names from file
-  signal_columns <- signal_columns[-1] # Remove the index name from the column names
+  #signal_columns.names <- names(signal_columns)
+
+  #signal_columns <- signal_columns_i[-1] # Remove the index name from the column names
 
   signal_data <- read.table(arg1_filename, skip = 72, col.names = signal_columns) # Render a data table from the raw data
   signal_data <- as.data.frame.matrix(signal_data) # Convert data table into a data frame
 
-  signal_data.names <- names(x)	# get the column names
-
-  #x[x.names[1]]	# 1st column
-  #x[x.names[1]][[1]]
+  #rownames(signal_data) <- NULL
+  #signal_data <- cbind(signal_columns_i[1], signal_data)
 
   return(signal_data)
 }
