@@ -6,7 +6,7 @@ check_args <- function(args) {
     stop("Script requires exactly 2 arguments: file name and plot type ('2D', '3D').")
   } else if (file.exists(args[1]) != TRUE) { # If the passed file does not exist in the current directory, stop and output
     stop("File not found in current directory.")
-  } else if (args[2] != '2D' && args[2] != '3D') { # If neither of the 2nd arugments are plot/noplot, stop and output
+  } else if (args[2] %in% c('2D', '3D') == FALSE) { # If the 2nd cmdline arg is not in the vector, stop and output
       stop("2nd argument must be '2D' or '3D'.")
   }
 }
@@ -19,23 +19,10 @@ load_data <- function(arg1_filename) {
 
   # Render the read.csv object into a dataframe, ensuring NA values are excluded
   signal_columns <- read.table(arg1_filename, nrows = 1, skip = 70) # Grab column names from file
-  #signal_columns.names <- names(signal_columns)
-
-  #signal_columns <- signal_columns_i[-1] # Remove the index name from the column names
-
-  signal_data <- read.table(arg1_filename, skip = 72, col.names = signal_columns) # Render a data table from the raw data
+  signal_data <- read.table(arg1_filename, skip = 72, col.names = signal_columns) # Render a data table from raw data, w/ signal_columns as respective titles
   signal_data <- as.data.frame.matrix(signal_data) # Convert data table into a data frame
 
-  #rownames(signal_data) <- NULL
-  #signal_data <- cbind(signal_columns_i[1], signal_data)
+  signal_data[[1]] <- signal_data[[1]] + (.001 * 198000) # Time addition to account for removal of empty signal movement
 
   return(signal_data)
 }
-
-
-#x <- table(rpois(100, 5))
-
-#x.names <- names(x)	# get the column names
-
-#x[x.names[1]]	# 1st column
-#x[x.names[1]][[1]]	# only value for first column
