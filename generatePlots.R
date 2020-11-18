@@ -6,9 +6,10 @@ source('plottingTools.R')
 args <- commandArgs(trailingOnly = TRUE) # Variable containing arguements passed from command line
 check_args(args)
 
-
+library('reshape2')
 
 signal_df <- load_data(args[1])
+signal_df_melt <- melt(signal_df, id.vars = c("Time"))
 
 library('ggplot2')
 library('plotly')
@@ -23,6 +24,20 @@ print(signal_df.z1)
 
 #plot(signal_df.x1, scale(signal_df.y1[["Coupling.2.gNMDA"]]), type = 'l')
 
+
+
+fig <- plot_ly(
+  data = signal_df_melt,
+  type = 'scatter3d',
+  mode = 'lines',
+  x = ~ value, # Column names
+  y = ~ Time, # Time
+  z = ~ variable, # Values for each respective column name
+  color = ~ variable,
+  colors = c('red', 'blue', 'yellow', 'green', 'purple'))
+
+fig
+
 #plot_ly(
 #  data = signal_df,
 #  x = ~signal_df.z1, # Column names
@@ -36,13 +51,14 @@ print(signal_df.z1)
 
 #+ stat_smooth(color = "#00AFBB", method = 'loess')
 
-ggplot(signal_df, aes(x=signal_df.x1, y = signal_df$Coupling.2.gNMDA)) +
+#ggplot(signal_df, aes(x=signal_df.x1, y = signal_df$Coupling.2.gNMDA)) +
   #geom_area(fill="#69b3a2", alpha=0.5) +
   #geom_line(aes(y = scale(Coupling.2.Ca)), color = "darkred") +
-  geom_line(aes(y = scale(Coupling.2.gNMDA)), color="steelblue", linetype="twodash") +
-  geom_smooth(method = loess)
+  #geom_line(aes(y = scale(Coupling.2.gNMDA)), color="steelblue", linetype="twodash") +
+  #geom_smooth(method = loess)
 
-ggsave('plotted.png', width = 5, height = 5)
+ggsave('plotted.pdf', width = 5, height = 5)
+
 
 
 #signal_plot <- ggplot(data = signal_df, aes(x = length(df[['Coupling.2.gNMDA']]), y = df[['Coupling.2.gNMDA']])) +
@@ -59,16 +75,9 @@ ggsave('plotted.png', width = 5, height = 5)
 #  scale_colour_gradient2(low = "blue", mid = "yellow" , high = "red",
 #                         midpoint=median(a2$values)) + theme_bw()
 
-#cccc <- signal_df[["Time"]] ^ 2 # Ax2
-#quadratic_model <- lm(signal_df[['Coupling.2.gNMDA']] ~ signal_df[["Time"]] + cccc) # Ax^2 + Bx + C
-#qxx <- seq( # Generate range of values from min to max nbr.injuries that are equally spaced
-#  min(signal_df[["Time"]]),
-#  max(signal_df[["Time"]]),
-#  len = length(signal_df[["Time"]]))
-#qyy <- quadratic_model$coef %*% rbind(1, qxx, qxx ^ 2)
-#lines(qxx, qyy, lwd = 2, col = 'red')
-
 #lines(signal_df[['Time']], predict(scale(signal_df[['Coupling.2.gNMDA']])),lty=2,col="red",lwd=3)
 #lines(signal_df[['Time']], scale(signal_df[['Coupling.2.Ca']]), type = 'l', col = 'purple')
 
 #signal_plot
+
+#dev.off()
