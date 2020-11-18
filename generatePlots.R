@@ -7,36 +7,34 @@ args <- commandArgs(trailingOnly = TRUE) # Variable containing arguements passed
 check_args(args)
 
 library('reshape2')
-
-signal_df <- load_data(args[1])
-signal_df_melt <- melt(signal_df, id.vars = c("Time"))
-
 library('ggplot2')
 library('plotly')
 
-print (signal_df[1:20,])
+signal_df <- load_data(args[1])
+signal_df[2:length(signal_df) - 1] <- scale(signal_df[2:length(signal_df) - 1]) # Scale all columns, excluding b
+print(head(signal_df))
+signal_df_melt <- melt(signal_df, id.vars = c("Time"))
+print(head(signal_df_melt))
+signal_df_melt <- signal_df_melt[c(2,3,1)]
+#print(signal_df_melt)
 
 signal_df.x1 <- signal_df[["Time"]]
 signal_df.y1 <- signal_df # needed specifically for 2D plot
-signal_df.z1 <- names(signal_df[-1]) # All column names, excluding time
+signal_df.z1 <- names(signal_df[-1]) # All column names, excluding Time
 
 print(signal_df.z1)
 
 #plot(signal_df.x1, scale(signal_df.y1[["Coupling.2.gNMDA"]]), type = 'l')
 
+plotting_3d(signal_df_melt)
+
+# fig <- fig %>% add_trace( ... )
+# fig <- fig %>% layout( ... )
 
 
-fig <- plot_ly(
-  data = signal_df_melt,
-  type = 'scatter3d',
-  mode = 'lines',
-  x = ~ value, # Column names
-  y = ~ Time, # Time
-  z = ~ variable, # Values for each respective column name
-  color = ~ variable,
-  colors = c('red', 'blue', 'yellow', 'green', 'purple'))
 
-fig
+#ggsave('plotted.pdf', width = 5, height = 5)
+
 
 #plot_ly(
 #  data = signal_df,
@@ -45,7 +43,8 @@ fig
 #  z = ~signal_df.y1[, signal_df.z1], # Values for each respective column name
 #  type = 'scatter3d',
 #  mode = 'lines',
-#  color = c('red', 'blue', 'yellow', 'green', 'purple'))
+#  color = ~variable,
+#  colors = c('red', 'blue', 'yellow', 'green', 'purple'))
 
 
 
@@ -57,7 +56,6 @@ fig
   #geom_line(aes(y = scale(Coupling.2.gNMDA)), color="steelblue", linetype="twodash") +
   #geom_smooth(method = loess)
 
-ggsave('plotted.pdf', width = 5, height = 5)
 
 
 

@@ -26,3 +26,32 @@ load_data <- function(arg1_filename) {
 
   return(signal_data)
 }
+
+
+plotting_3d <- function(signal_df_melt) {
+  fig <- plot_ly(
+    data = signal_df_melt,
+    type = 'scatter3d',
+    mode = 'lines',
+    x = ~ Time, # Time
+    y = ~ variable, # Signal
+    z = ~ value, # Values for each respective column name
+    color = ~ variable,
+    colors = c('red', 'blue', 'yellow', 'green', 'purple'))
+
+    # Runs dash server at outputted local url
+    library(dash)
+    library(dashCoreComponents)
+    library(dashHtmlComponents)
+
+    app <- Dash$new()
+    app$layout(
+        htmlDiv(
+            list(
+                dccGraph(figure=fig)
+            )
+         )
+    )
+
+    app$run_server(debug=TRUE, dev_tools_hot_reload=FALSE)
+}
