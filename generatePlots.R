@@ -15,23 +15,35 @@ library('plotly')
 
 print (signal_df[1:20,])
 
-print(names(signal_df))
-
-print(length(signal_df[["Time"]]))
-
 signal_df.x1 <- signal_df[["Time"]]
-signal_df.y1 <- signal_df[["Coupling.2.gNMDA"]]
-signal_df.z1 <- signal_df[-1]$value
+signal_df.y1 <- signal_df # needed specifically for 2D plot
+signal_df.z1 <- names(signal_df[-1]) # All column names, excluding time
+
+print(signal_df.z1)
+
+#plot(signal_df.x1, scale(signal_df.y1[["Coupling.2.gNMDA"]]), type = 'l')
+
+#plot_ly(
+#  data = signal_df,
+#  x = ~signal_df.z1, # Column names
+#  y = ~signal_df.x1, # Time
+#  z = ~signal_df.y1[, signal_df.z1], # Values for each respective column name
+#  type = 'scatter3d',
+#  mode = 'lines',
+#  color = c('red', 'blue', 'yellow', 'green', 'purple'))
 
 
-plot_ly(
-  data = signal_df,
-  x = signal_df.x1,
-  y = signal_df.y1,
-  z = signal_df.z1,
-  type = 'scatter3d',
-  mode = 'lines',
-  color = c('red', 'blue', 'yellow', 'green'))
+
+#+ stat_smooth(color = "#00AFBB", method = 'loess')
+
+ggplot(signal_df, aes(x=signal_df.x1, y = signal_df$Coupling.2.gNMDA)) +
+  #geom_area(fill="#69b3a2", alpha=0.5) +
+  #geom_line(aes(y = scale(Coupling.2.Ca)), color = "darkred") +
+  geom_line(aes(y = scale(Coupling.2.gNMDA)), color="steelblue", linetype="twodash") +
+  geom_smooth(method = loess)
+
+ggsave('plotted.png', width = 5, height = 5)
+
 
 #signal_plot <- ggplot(data = signal_df, aes(x = length(df[['Coupling.2.gNMDA']]), y = df[['Coupling.2.gNMDA']])) +
 #    geom_area(fill="#69b3a2", alpha=0.5) +
@@ -39,7 +51,7 @@ plot_ly(
 #    ylab("gNMDA Change")
 
 
-#plot(signal_df.x1, scale(signal_df.y1), type = 'l')
+
 
 #ggplot(a2, aes(x = year, y = values, color = values )) +
 #  geom_line(size = 0.5)  +
