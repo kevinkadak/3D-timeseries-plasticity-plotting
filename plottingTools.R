@@ -24,34 +24,44 @@ load_data <- function(arg1_filename) {
 
   signal_data[[1]] <- signal_data[[1]] + (.001 * 198000) # Time addition to account for removal of empty signal movement
 
+  #signal_df <- signal_df[-1] # Remove time
+
+  #signal_df_melt$variable <- "Signal"
+  #signal_df_melt$value <- "Intensity"
+  #print(head(signal_df_melt))
+  #signal_df_melt <- signal_df_melt[c(2,3,1)]
+
   return(signal_data)
 }
-
 
 plotting_3d <- function(signal_df_melt) {
   fig <- plot_ly(
     data = signal_df_melt,
     type = 'scatter3d',
     mode = 'lines',
-    x = ~ Time, # Time
-    y = ~ variable, # Signal
+    x = ~ variable, # Time
+    y = ~ Time, # Signal
     z = ~ value, # Values for each respective column name
     color = ~ variable,
     colors = c('red', 'blue', 'yellow', 'green', 'purple'))
 
-    # Runs dash server at outputted local url
-    library(dash)
-    library(dashCoreComponents)
-    library(dashHtmlComponents)
+  run_dash(fig)
+}
 
-    app <- Dash$new()
-    app$layout(
-        htmlDiv(
-            list(
-                dccGraph(figure=fig)
-            )
-         )
-    )
+run_dash <- function(fig) {
+  # Runs dash server at outputted local url
+  library(dash)
+  library(dashCoreComponents)
+  library(dashHtmlComponents)
 
-    app$run_server(debug=TRUE, dev_tools_hot_reload=FALSE)
+  app <- Dash$new()
+  app$layout(
+      htmlDiv(
+          list(
+              dccGraph(figure=fig)
+          )
+       )
+  )
+
+  app$run_server(debug=TRUE, dev_tools_hot_reload=FALSE)
 }

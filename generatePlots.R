@@ -9,14 +9,12 @@ check_args(args)
 library('reshape2')
 library('ggplot2')
 library('plotly')
+library("rgl")
 
 signal_df <- load_data(args[1])
-signal_df[2:length(signal_df) - 1] <- scale(signal_df[2:length(signal_df) - 1]) # Scale all columns, excluding b
-print(head(signal_df))
+
+signal_df[2:length(signal_df)] <- scale(signal_df[2:length(signal_df)]) # Scale all columns, excluding b
 signal_df_melt <- melt(signal_df, id.vars = c("Time"))
-print(head(signal_df_melt))
-signal_df_melt <- signal_df_melt[c(2,3,1)]
-#print(signal_df_melt)
 
 signal_df.x1 <- signal_df[["Time"]]
 signal_df.y1 <- signal_df # needed specifically for 2D plot
@@ -26,7 +24,10 @@ print(signal_df.z1)
 
 #plot(signal_df.x1, scale(signal_df.y1[["Coupling.2.gNMDA"]]), type = 'l')
 
-plotting_3d(signal_df_melt)
+plot3d(signal_df_melt$variable, signal_df_melt$Time, signal_df_melt$value)
+
+
+#plotting_3d(signal_df_melt) # Perform plot_ly 3D plotting
 
 # fig <- fig %>% add_trace( ... )
 # fig <- fig %>% layout( ... )
