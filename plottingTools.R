@@ -33,6 +33,17 @@ load_data <- function(arg1_filename) {
 
   return(signal_data)
 }
+plotting_2d <- function(signal_df_melt) {
+  ggplot(signal_df_melt, aes(x = Time, y = value, color = variable)) +
+    #geom_area(aes(fill=variable),alpha=0.4) +
+    geom_line() +
+    geom_smooth(method = 'loess', se = FALSE) +
+    theme_bw() +
+    theme(legend.position = 'top',
+          legend.title = element_blank())
+
+  ggsave("kk1.pdf")
+}
 
 plotting_3d <- function(signal_df_melt) {
   fig <- plot_ly(
@@ -42,8 +53,13 @@ plotting_3d <- function(signal_df_melt) {
     x = ~ variable, # Time
     y = ~ Time, # Signal
     z = ~ value, # Values for each respective column name
-    color = ~ variable,
-    colors = c('red', 'blue', 'yellow', 'green', 'purple'))
+    color = ~variable,
+    line = list(width = 4)) %>%
+
+    layout(scene = list(
+      xaxis = list(title = 'Signals'),
+      yaxis = list(title = 'Time (s)'),
+      zaxis = list(title = 'Intensity (standardized)')))
 
   run_dash(fig)
 }

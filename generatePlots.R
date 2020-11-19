@@ -10,11 +10,16 @@ library('reshape2')
 library('ggplot2')
 library('plotly')
 library("rgl")
+library('plot3D')
 
 signal_df <- load_data(args[1])
 
-signal_df[2:length(signal_df)] <- scale(signal_df[2:length(signal_df)]) # Scale all columns, excluding b
+signal_df[2:length(signal_df)] <- scale(signal_df[2:length(signal_df)]) # Scale all columns
+signal_df[is.na(signal_df)] <- 0 # Catch any instances where values were rendered as NaN due to inability to scale()
+
+print(head(signal_df))
 signal_df_melt <- melt(signal_df, id.vars = c("Time"))
+print(head(signal_df_melt))
 
 signal_df.x1 <- signal_df[["Time"]]
 signal_df.y1 <- signal_df # needed specifically for 2D plot
@@ -22,17 +27,25 @@ signal_df.z1 <- names(signal_df[-1]) # All column names, excluding Time
 
 print(signal_df.z1)
 
+
+#plotting_2d(signal_df_melt) # Perform ggplot2 2D render
+plotting_3d(signal_df_melt) # Perform plot_ly 3D render
+
+
+
+
+###########################
+
+#ggplot(signal_df_melt, aes(x = `Mean Temperature [F]`, y = `Month`, fill = ..x..))
+
 #plot(signal_df.x1, scale(signal_df.y1[["Coupling.2.gNMDA"]]), type = 'l')
 
-plot3d(signal_df_melt$variable, signal_df_melt$Time, signal_df_melt$value)
+#plot3d(signal_df_melt$variable, signal_df_melt$Time, signal_df_melt$value)
+#scatter3D(x = rep(signal_df_melt[["variable"]]), y = signal_df[["Time"]], z = signal_df[["Coupling.2.gNMDA"]], bty = "b2", colkey = FALSE, main ="bty= 'b2'")
 
 
-#plotting_3d(signal_df_melt) # Perform plot_ly 3D plotting
 
-# fig <- fig %>% add_trace( ... )
-# fig <- fig %>% layout( ... )
-
-
+#rgl.postscript("mypdf.pdf","pdf")
 
 #ggsave('plotted.pdf', width = 5, height = 5)
 
@@ -73,10 +86,3 @@ plot3d(signal_df_melt$variable, signal_df_melt$Time, signal_df_melt$value)
 #  geom_smooth(aes(color=..y..), size=1.5, se=FALSE) +
 #  scale_colour_gradient2(low = "blue", mid = "yellow" , high = "red",
 #                         midpoint=median(a2$values)) + theme_bw()
-
-#lines(signal_df[['Time']], predict(scale(signal_df[['Coupling.2.gNMDA']])),lty=2,col="red",lwd=3)
-#lines(signal_df[['Time']], scale(signal_df[['Coupling.2.Ca']]), type = 'l', col = 'purple')
-
-#signal_plot
-
-#dev.off()
