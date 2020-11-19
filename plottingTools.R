@@ -33,35 +33,61 @@ load_data <- function(arg1_filename) {
 
   return(signal_data)
 }
-plotting_2d <- function(signal_df_melt) {
-  ggplot(signal_df_melt, aes(x = Time, y = value, color = variable)) +
+plotting_2d <- function(signal_df) {
+  #ggplot(signal_df_melt, aes(x = Time, y = value, color = variable)) +
     #geom_area(aes(fill=variable),alpha=0.4) +
-    geom_line() +
-    geom_smooth(method = 'loess', se = FALSE) +
-    theme_bw() +
-    theme(legend.position = 'top',
-          legend.title = element_blank())
+  #  geom_line() +
+  #  geom_smooth(method = 'loess', se = FALSE) +
+  #  theme_bw() +
+  #  theme(legend.position = 'top',
+  #        legend.title = element_blank())
 
-  ggsave("kk1.pdf")
+  #ggsave("kk1.pdf")
+
+
+  for (i in signal_df[-1]) {
+    ggplot(signal_df, aes(x = Time, y = i, color = i)) +
+      geom_line() +
+      #geom_area(aes(fill=Coupling.2.gNMDA),alpha=0.4) +
+      #geom_smooth(method = 'loess', se = FALSE) +
+      theme_bw() +
+      theme(legend.position = 'top',
+            legend.title = element_blank())
+  }
+
+
+  ggsave("kk2.pdf")
 }
 
 plotting_3d <- function(signal_df_melt) {
-  fig <- plot_ly(
-    data = signal_df_melt,
-    type = 'scatter3d',
-    mode = 'lines',
-    x = ~ variable, # Time
-    y = ~ Time, # Signal
-    z = ~ value, # Values for each respective column name
-    color = ~variable,
-    line = list(width = 4)) %>%
+  #fig <- plot_ly(
+  #  data = signal_df_melt,
+  #  type = 'scatter3d',
+  #  mode = 'h',
+  #  x = ~ variable, # Time
+  #  y = ~ Time, # Signal
+  #  z = ~ value, # Values for each respective column name
+  #  color = ~variable,
+  #  line = list(width = 4)) %>%
 
-    layout(scene = list(
-      xaxis = list(title = 'Signals'),
-      yaxis = list(title = 'Time (s)'),
-      zaxis = list(title = 'Intensity (standardized)')))
+  #  layout(scene = list(
+  #    xaxis = list(title = 'Signals'),
+  #    yaxis = list(title = 'Time (s)'),
+  #    zaxis = list(title = 'Intensity (standardized)')))
 
-  run_dash(fig)
+  #run_dash(fig)
+
+
+  #print(as.numeric(as.factor(signal_df_melt$variable)))
+  scatter3D(x = as.numeric(as.factor(signal_df_melt$variable)), y = signal_df_melt$Time, z = signal_df_melt$value,
+  theta = 40,
+  phi = 20,
+  bty = "g",
+  type = "h",
+  xlab = 'Signals',
+  ylab = 'Time (s)',
+  zlab = 'Intensity (standardized)',
+  ticktype = "detailed", pch = 19, cex = 0.5)
 }
 
 run_dash <- function(fig) {

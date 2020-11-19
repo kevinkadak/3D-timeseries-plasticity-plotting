@@ -13,23 +13,27 @@ library("rgl")
 library('plot3D')
 
 signal_df <- load_data(args[1])
+chosenOP <- args[2]
+
+signal_df.time <- signal_df[["Time"]]
+#signal_df.y1 <- signal_df # needed specifically for 2D plot
+signal_df.names <- names(signal_df[-1]) # All column names, excluding Time
 
 signal_df[2:length(signal_df)] <- scale(signal_df[2:length(signal_df)]) # Scale all columns
 signal_df[is.na(signal_df)] <- 0 # Catch any instances where values were rendered as NaN due to inability to scale()
-
 print(head(signal_df))
-signal_df_melt <- melt(signal_df, id.vars = c("Time"))
+
+#names(signal_df) <- replace(names(signal_df), names(signal_df), split(names(signal_df), ".")[3])
+#print(signal_df)
+
+signal_df_melt <- melt(signal_df, id.vars = c("Time")) # Convert the dataframe into a 3-column str for xyz plotting
+#names(signal_df_melt) <- replace(names(signal_df_melt), names(signal_df_melt), split(signal_df.names, ".")[3])
+#signal_df_melt[['variable']] <- replace(signal_df_melt[['variable']], signal_df.names, c('nu', 'nutilde', 'Ca', 'B', 'gNMDA'))
+#replace(signal_df_melt[['variable']], signal_df.names, split(signal_df.names, ".")[3])
 print(head(signal_df_melt))
 
-signal_df.x1 <- signal_df[["Time"]]
-signal_df.y1 <- signal_df # needed specifically for 2D plot
-signal_df.z1 <- names(signal_df[-1]) # All column names, excluding Time
-
-print(signal_df.z1)
-
-
-#plotting_2d(signal_df_melt) # Perform ggplot2 2D render
-plotting_3d(signal_df_melt) # Perform plot_ly 3D render
+if (chosenOP == '2D') plotting_2d(signal_df) # Perform ggplot2 2D render
+if (chosenOP == '3D') plotting_3d(signal_df_melt) # Perform plot_ly 3D render
 
 
 
