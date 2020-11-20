@@ -20,8 +20,8 @@ signal_df.time <- signal_df[["Time"]]
 #signal_df.y1 <- signal_df # needed specifically for 2D plot
 signal_df.names <- names(signal_df[-1]) # All column names, excluding Time
 
-signal_df[2:length(signal_df)] <- scale(signal_df[2:length(signal_df)]) # Scale all columns
-signal_df[is.na(signal_df)] <- 0 # Catch any instances where values were rendered as NaN due to inability to scale()
+signal_df[2:length(signal_df)] <- scale(signal_df[2:length(signal_df)]) # Scale all columns excluding Time
+signal_df[is.na(signal_df)] <- 0 # Any instances where values did change and were thus rendered as NaN due to inability to scale() = 0
 print(head(signal_df))
 
 #names(signal_df) <- replace(names(signal_df), names(signal_df), split(names(signal_df), ".")[3])
@@ -33,11 +33,21 @@ signal_df_melt <- melt(signal_df, id.vars = c("Time")) # Convert the dataframe i
 #replace(signal_df_melt[['variable']], signal_df.names, split(signal_df.names, ".")[3])
 print(head(signal_df_melt))
 
+
+
+#----------2D Plot----------#
+#
+#
+#
 if (chosenOP == '2D') plotting_2d(signal_df) # Perform ggplot2 2D render
-if (chosenOP == '3D') plotting_3d(signal_df_melt) # Perform plot_ly 3D render
 
+#----------3D Plot----------#
+#
+#
+#
+#
 
-
+if (chosenOP == '3D') plotting_3d(signal_df_melt) # Perform scatter3D render
 
 ###########################
 

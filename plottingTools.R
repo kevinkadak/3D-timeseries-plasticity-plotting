@@ -34,29 +34,28 @@ load_data <- function(arg1_filename) {
   return(signal_data)
 }
 plotting_2d <- function(signal_df) {
-  #ggplot(signal_df_melt, aes(x = Time, y = value, color = variable)) +
-    #geom_area(aes(fill=variable),alpha=0.4) +
-  #  geom_line() +
+  ggplot(signal_df_melt, aes(x = Time, y = value, colour =  variable)) +
+    geom_line() +
+    geom_area(alpha=0.4, position = 'identity') +
   #  geom_smooth(method = 'loess', se = FALSE) +
-  #  theme_bw() +
-  #  theme(legend.position = 'top',
-  #        legend.title = element_blank())
+    theme_bw() +
+    theme(legend.position = 'top')#, legend.title = element_text('Signals'))
 
-  #ggsave("kk1.pdf")
-
-
-  for (i in signal_df[-1]) {
-    ggplot(signal_df, aes(x = Time, y = i, color = i)) +
-      geom_line() +
-      #geom_area(aes(fill=Coupling.2.gNMDA),alpha=0.4) +
-      #geom_smooth(method = 'loess', se = FALSE) +
-      theme_bw() +
-      theme(legend.position = 'top',
-            legend.title = element_blank())
-  }
+  ggsave("kk1.pdf")
 
 
-  ggsave("kk2.pdf")
+  #for (i in signal_df[-1]) {
+  #  ggplot(signal_df, aes(x = Time, y = value, color = i)) +
+  #    geom_line() +
+  #    #geom_area(aes(fill=Coupling.2.gNMDA),alpha=0.4) +
+  #    #geom_smooth(method = 'loess', se = FALSE) +
+  #    theme_bw() +
+  #    theme(legend.position = 'top',
+  #          legend.title = element_blank())
+  #}
+
+
+  #ggsave("kk2.pdf")
 }
 
 plotting_3d <- function(signal_df_melt) {
@@ -111,7 +110,7 @@ plotting_3d <- function(signal_df_melt) {
     labels = c('Coupling Strength', 'Target CS', 'ICC', 'Glutamate Change', 'NMDA Gain'),
     side = 3,
     dist = .06,
-    shift = -.02),
+    shift = -.018),
   type = 'g', alpha = .95, col = colours, colvar = as.numeric(as.factor(signal_df_melt$variable)))
 }
 
