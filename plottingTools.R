@@ -79,11 +79,13 @@ plotting_3d <- function(signal_df_melt) {
 
 
   #print(as.numeric(as.factor(signal_df_melt$variable)))
-  colours = c('#f6a97a', '#fa7876', '#ea4f88', '#c0369d', '#872ca2')
+  colours = c('#4b2991', '#c0369d', '#ea4f88', '#fa7876', '#f6a97a')
+  #colours = ramp.col()
 
+  # Under-line area fill, perspective orientation, and labelling
   scatter3D(x = as.numeric(as.factor(signal_df_melt$variable)), y = signal_df_melt$Time, z = signal_df_melt$value,
-  theta = 58,
-  phi = 25,
+  theta = 55, # was 56 before
+  phi = 22,
   bty = "g",
   type = "h",
   xlab = 'Signals',
@@ -95,11 +97,22 @@ plotting_3d <- function(signal_df_melt) {
   clab = "Signal Intensity",
   colvar = as.numeric(as.factor(signal_df_melt$variable)),
   col = colours,
-  alpha = 0.025,
+  alpha = 0.02,
   colkey = FALSE)
 
+  # Solid data points forming line, Colour legend
   scatter3D(x = as.numeric(as.factor(signal_df_melt$variable)), y = signal_df_melt$Time, z = signal_df_melt$value,
-  pch = 19, cex = 0, plot = TRUE, add = TRUE, colkey = TRUE, type = 'g', alpha = .95, col = colours, colvar = as.numeric(as.factor(signal_df_melt$variable)))
+  pch = 19,
+  cex = .05,
+  plot = TRUE,
+  add = TRUE,
+  colkey = list(
+    at = 1:length(unique(signal_df_melt$variable)),
+    labels = c('Coupling Strength', 'Target CS', 'ICC', 'Glutamate Change', 'NMDA Gain'),
+    side = 3,
+    dist = .06,
+    shift = -.02),
+  type = 'g', alpha = .95, col = colours, colvar = as.numeric(as.factor(signal_df_melt$variable)))
 }
 
 run_dash <- function(fig) {

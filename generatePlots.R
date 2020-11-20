@@ -4,6 +4,7 @@
 source('plottingTools.R')
 
 args <- commandArgs(trailingOnly = TRUE) # Variable containing arguements passed from command line
+#plotOption1 <- readline(prompt = "")
 check_args(args)
 
 library('reshape2')
