@@ -27,16 +27,13 @@ load_data <- function(arg1_filename) {
   return(signal_data)
 }
 
-plotting_2d <- function(signal_df_melt) {
+plotting_2d <- function(signal_df_melt, sig_labels) {
 #  ggplot(signal_df_melt, aes(x = Time, y = value, colour =  variable)) +
 #    geom_line() +
 #    geom_area(alpha=0.4, position = 'identity') +
   #  geom_smooth(method = 'loess', se = FALSE) +
 #    theme_bw() +
 #    theme(legend.position = 'top')#, legend.title = element_text('Signals'))
-
-  colours <- c('#4b2991', '#c0369d', '#ea4f88', '#fa7876', '#f6a97a')
-  labels <- c('Coupling Strength', 'Target CS', 'ICC', 'Glutamate Change', 'NMDA Gain')
 
   #all_plot <- ggplot(signal_df_melt, aes(x = Time, y = value, colour = variable)) +
   #  xlab("Time (s)") +
@@ -55,88 +52,64 @@ plotting_2d <- function(signal_df_melt) {
     theme(legend.position = 'top', legend.title = element_blank()) +
     facet_wrap(~variable)
 
-
-#ggplot(signal_df_melt, aes(x = Time, y = value, colour =  variable)) +
-#    geom_line()
-
-
-
-
   ggsave("2dplot.pdf")
-
-
-  #for (i in signal_df[-1]) {
-  #  ggplot(signal_df, aes(x = Time, y = value, color = i)) +
-  #    geom_line() +
-  #    #geom_area(aes(fill=Coupling.2.gNMDA),alpha=0.4) +
-  #    #geom_smooth(method = 'loess', se = FALSE) +
-  #    theme_bw() +
-  #    theme(legend.position = 'top',
-  #          legend.title = element_blank())
-  #}
-
-
-  #ggsave("kk2.pdf")
 }
 
-plotting_3d <- function(signal_df_melt) {
-  #fig <- plot_ly(
-  #  data = signal_df_melt,
-  #  type = 'scatter3d',
-  #  mode = 'h',
-  #  x = ~ variable, # Time
-  #  y = ~ Time, # Signal
-  #  z = ~ value, # Values for each respective column name
-  #  color = ~variable,
-  #  line = list(width = 4)) %>%
-
-  #  layout(scene = list(
-  #    xaxis = list(title = 'Signals'),
-  #    yaxis = list(title = 'Time (s)'),
-  #    zaxis = list(title = 'Intensity (standardized)')))
-
-  #run_dash(fig)
-
-
-  #print(as.numeric(as.factor(signal_df_melt$variable)))
-  colours <- c('#4b2991', '#c0369d', '#ea4f88', '#fa7876', '#f6a97a')
-
-  #colours = ramp.col()
-
+plotting_3d <- function(sig.df.melt_Time, sig.df.melt_variable, sig.df.melt_value, sig_labels, col_palete) {
   # Under-line area fill, perspective orientation, and labelling
-  scatter3D(x = as.numeric(as.factor(signal_df_melt$variable)), y = signal_df_melt$Time, z = signal_df_melt$value,
-  theta = 55, # was 56 before
-  phi = 22,
-  bty = "g",
-  type = "h",
-  xlab = 'Signals',
-  ylab = 'Time (s)',
-  zlab = 'Intensity (standardized)',
-  ticktype = "detailed",
-  pch = 19,
-  cex = 0.1,
-  clab = "Signal Intensity",
-  colvar = as.numeric(as.factor(signal_df_melt$variable)),
-  col = colours,
+  scatter3D(x = as.numeric(as.factor(sig.df.melt_variable)), y = sig.df.melt_Time, z = sig.df.melt_value,
+  theta = 55, # Camera orientation
+  phi = 22, # Camera orientation
+  bty = "g", # Graph background type
+  type = "h", # points w/ vertical lines
+  xlab = 'Signals', # X label
+  ylab = 'Time (s)', # Y label
+  zlab = 'Intensity (standardized)', # Z label
+  ticktype = "detailed", # Include more information on plot ticks
+  pch = 19, # Point style
+  cex = 0.1, # Point size
+  colvar = as.numeric(as.factor(sig.df.melt_variable)), #
+  col = col_palete,
   alpha = 0.02,
   colkey = FALSE)
 
   # Solid data points forming line, Colour legend
-  scatter3D(x = as.numeric(as.factor(signal_df_melt$variable)), y = signal_df_melt$Time, z = signal_df_melt$value,
+  scatter3D(x = as.numeric(as.factor(sig.df.melt_variable)), y = sig.df.melt_Time, z = sig.df.melt_value,
   pch = 19,
   cex = .05,
   plot = TRUE,
   add = TRUE,
   colkey = list(
-    at = 1:length(unique(signal_df_melt$variable)),
-    labels = c('Coupling Strength', 'Target CS', 'ICC', 'Glutamate Change', 'NMDA Gain'),
+    at = 1:length(unique(sig.df.melt_variable)),
+    labels = sig_labels,
     side = 3,
     dist = .06,
     shift = -.018),
-  type = 'g', alpha = .95, col = colours, colvar = as.numeric(as.factor(signal_df_melt$variable)))
+  type = 'g',
+  alpha = .95,
+  col = col_palete,
+  colvar = as.numeric(as.factor(sig.df.melt_variable)))
 }
 
-run_dash <- function(fig) {
+run_interactive <- function(signal_df_melt) {
+  fig <- plot_ly(
+    data = signal_df_melt,
+    type = 'scatter3d',
+    mode = 'h',
+    x = ~ variable, # Time
+    y = ~ Time, # Signal
+    z = ~ value, # Values for each respective column name
+    color = ~variable,
+    line = list(width = 4)) %>%
+
+    layout(scene = list(
+      xaxis = list(title = 'Signals'),
+      yaxis = list(title = 'Time (s)'),
+      zaxis = list(title = 'Intensity (standardized)')))
+
+  run_dash(fig)
+
+
   # Runs dash server at outputted local url
   library(dash)
   library(dashCoreComponents)
