@@ -79,9 +79,11 @@ plotting_3d <- function(signal_df_melt) {
 
 
   #print(as.numeric(as.factor(signal_df_melt$variable)))
+  colours = c('#f6a97a', '#fa7876', '#ea4f88', '#c0369d', '#872ca2')
+
   scatter3D(x = as.numeric(as.factor(signal_df_melt$variable)), y = signal_df_melt$Time, z = signal_df_melt$value,
-  theta = 55,
-  phi = 20,
+  theta = 58,
+  phi = 25,
   bty = "g",
   type = "h",
   xlab = 'Signals',
@@ -89,15 +91,15 @@ plotting_3d <- function(signal_df_melt) {
   zlab = 'Intensity (standardized)',
   ticktype = "detailed",
   pch = 19,
-  cex = 0.5,
+  cex = 0.1,
   clab = "Signal Intensity",
   colvar = as.numeric(as.factor(signal_df_melt$variable)),
-  col = c('red', 'blue', 'orange', 'green', 'purple'),
+  col = colours,
   alpha = 0.025,
   colkey = FALSE)
 
   scatter3D(x = as.numeric(as.factor(signal_df_melt$variable)), y = signal_df_melt$Time, z = signal_df_melt$value,
-  pch = 19, cex = 0.25, add = TRUE, colkey = TRUE, type = 'g', alpha = .95, col = c('red', 'blue', 'orange', 'green', 'purple'), colvar = as.numeric(as.factor(signal_df_melt$variable)))
+  pch = 19, cex = 0, plot = TRUE, add = TRUE, colkey = TRUE, type = 'g', alpha = .95, col = colours, colvar = as.numeric(as.factor(signal_df_melt$variable)))
 }
 
 run_dash <- function(fig) {
