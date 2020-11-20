@@ -28,31 +28,23 @@ load_data <- function(arg1_filename) {
 }
 
 plotting_2d <- function(signal_df_melt, sig_labels) {
-#  ggplot(signal_df_melt, aes(x = Time, y = value, colour =  variable)) +
-#    geom_line() +
-#    geom_area(alpha=0.4, position = 'identity') +
-  #  geom_smooth(method = 'loess', se = FALSE) +
-#    theme_bw() +
-#    theme(legend.position = 'top')#, legend.title = element_text('Signals'))
-
-  #all_plot <- ggplot(signal_df_melt, aes(x = Time, y = value, colour = variable)) +
-  #  xlab("Time (s)") +
-  #  ylab("Intensity (standardized)") +
-  #  geom_line() +
-  #  geom_smooth(method = 'loess', se = FALSE, linetype = 'dashed', colour = 'black', size = .7, formula = y ~ x) +
-  #  theme_bw() +
-  #  theme(legend.position = 'top', legend.title = element_blank())
-
+  # Plot 2D graph of each individual signal w/ fitted loess line
   full_plot <- ggplot(signal_df_melt, aes(x = Time, y = value, colour = variable)) +
-    xlab("Time (s)") +
-    ylab("Intensity (standardized)") +
-    geom_line() +
-    geom_smooth(method = 'loess', se = FALSE, linetype = 'dashed', colour = 'black', size = .7, formula = y ~ x) +
-    theme_bw() +
-    theme(legend.position = 'top', legend.title = element_blank()) +
-    facet_wrap(~variable)
+    xlab("Time (s)") + # X label
+    ylab("Intensity (standardized)") + # Y label
+    geom_line() + # Add lines for each 'variable item'
+    geom_smooth( # Loess fitting line style and formula
+      method = 'loess',
+      se = FALSE,
+      linetype = 'dashed',
+      colour = 'black',
+      size = .7,
+      formula = y ~ x) +
+    theme_bw() + # Make background white
+    theme(legend.position = 'top', legend.title = element_blank()) + # Position legend above graphs
+    facet_wrap(~variable) # Splits the plot from a single, overlapping plot into individual subplots
 
-  ggsave("2dplot.pdf")
+  ggsave("2dplot.pdf") # Save 2D plot as .pdf
 }
 
 plotting_3d <- function(sig.df.melt_Time, sig.df.melt_variable, sig.df.melt_value, sig_labels, col_palete) {
@@ -68,61 +60,25 @@ plotting_3d <- function(sig.df.melt_Time, sig.df.melt_variable, sig.df.melt_valu
   ticktype = "detailed", # Include more information on plot ticks
   pch = 19, # Point style
   cex = 0.1, # Point size
-  colvar = as.numeric(as.factor(sig.df.melt_variable)), #
-  col = col_palete,
-  alpha = 0.02,
-  colkey = FALSE)
+  colvar = as.numeric(as.factor(sig.df.melt_variable)), # Alter data colour based on 'variable' factor
+  col = col_palete, # Source colour from passed colour palette argument
+  alpha = 0.02, # Make area under curve transparent
+  colkey = FALSE) # Do not show colour legend (will be done in other plot)
 
   # Solid data points forming line, Colour legend
   scatter3D(x = as.numeric(as.factor(sig.df.melt_variable)), y = sig.df.melt_Time, z = sig.df.melt_value,
-  pch = 19,
-  cex = .05,
-  plot = TRUE,
-  add = TRUE,
-  colkey = list(
+  pch = 19, # Point style
+  cex = .05, # Point size
+  plot = TRUE, # Plot the points
+  add = TRUE, # Include this data overtop of the original
+  colkey = list( # Specifies legend position & labelling
     at = 1:length(unique(sig.df.melt_variable)),
     labels = sig_labels,
     side = 3,
     dist = .06,
     shift = -.018),
-  type = 'g',
-  alpha = .95,
-  col = col_palete,
-  colvar = as.numeric(as.factor(sig.df.melt_variable)))
-}
-
-run_interactive <- function(signal_df_melt) {
-  fig <- plot_ly(
-    data = signal_df_melt,
-    type = 'scatter3d',
-    mode = 'h',
-    x = ~ variable, # Time
-    y = ~ Time, # Signal
-    z = ~ value, # Values for each respective column name
-    color = ~variable,
-    line = list(width = 4)) %>%
-
-    layout(scene = list(
-      xaxis = list(title = 'Signals'),
-      yaxis = list(title = 'Time (s)'),
-      zaxis = list(title = 'Intensity (standardized)')))
-
-  run_dash(fig)
-
-
-  # Runs dash server at outputted local url
-  library(dash)
-  library(dashCoreComponents)
-  library(dashHtmlComponents)
-
-  app <- Dash$new()
-  app$layout(
-      htmlDiv(
-          list(
-              dccGraph(figure=fig)
-          )
-       )
-  )
-
-  app$run_server(debug=TRUE, dev_tools_hot_reload=FALSE)
+  type = 'g', # Normal points (unlike the vertical lines discussed above)
+  alpha = .95, # Make points near-opaque
+  col = col_palete, # Source colour from passed colour palette argument
+  colvar = as.numeric(as.factor(sig.df.melt_variable))) # Alter data colour based on 'variable' factor
 }
