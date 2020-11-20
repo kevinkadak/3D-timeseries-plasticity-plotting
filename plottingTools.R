@@ -22,26 +22,47 @@ load_data <- function(arg1_filename) {
   signal_data <- read.table(arg1_filename, skip = 72, col.names = signal_columns) # Render a data table from raw data, w/ signal_columns as respective titles
   signal_data <- as.data.frame.matrix(signal_data) # Convert data table into a data frame
 
-  signal_data[[1]] <- signal_data[[1]] + (.001 * 198000) # Time addition to account for removal of empty signal movement
-
-  #signal_df <- signal_df[-1] # Remove time
-
-  #signal_df_melt$variable <- "Signal"
-  #signal_df_melt$value <- "Intensity"
-  #print(head(signal_df_melt))
-  #signal_df_melt <- signal_df_melt[c(2,3,1)]
+  signal_data[[1]] <- signal_data[[1]] + (.001 * 198000) # No signal movement occurs before 198s.  Render data progression to begin immediately
 
   return(signal_data)
 }
-plotting_2d <- function(signal_df) {
-  ggplot(signal_df_melt, aes(x = Time, y = value, colour =  variable)) +
-    geom_line() +
-    geom_area(alpha=0.4, position = 'identity') +
-  #  geom_smooth(method = 'loess', se = FALSE) +
-    theme_bw() +
-    theme(legend.position = 'top')#, legend.title = element_text('Signals'))
 
-  ggsave("kk1.pdf")
+plotting_2d <- function(signal_df_melt) {
+#  ggplot(signal_df_melt, aes(x = Time, y = value, colour =  variable)) +
+#    geom_line() +
+#    geom_area(alpha=0.4, position = 'identity') +
+  #  geom_smooth(method = 'loess', se = FALSE) +
+#    theme_bw() +
+#    theme(legend.position = 'top')#, legend.title = element_text('Signals'))
+
+  colours <- c('#4b2991', '#c0369d', '#ea4f88', '#fa7876', '#f6a97a')
+  labels <- c('Coupling Strength', 'Target CS', 'ICC', 'Glutamate Change', 'NMDA Gain')
+
+  #all_plot <- ggplot(signal_df_melt, aes(x = Time, y = value, colour = variable)) +
+  #  xlab("Time (s)") +
+  #  ylab("Intensity (standardized)") +
+  #  geom_line() +
+  #  geom_smooth(method = 'loess', se = FALSE, linetype = 'dashed', colour = 'black', size = .7, formula = y ~ x) +
+  #  theme_bw() +
+  #  theme(legend.position = 'top', legend.title = element_blank())
+
+  full_plot <- ggplot(signal_df_melt, aes(x = Time, y = value, colour = variable)) +
+    xlab("Time (s)") +
+    ylab("Intensity (standardized)") +
+    geom_line() +
+    geom_smooth(method = 'loess', se = FALSE, linetype = 'dashed', colour = 'black', size = .7, formula = y ~ x) +
+    theme_bw() +
+    theme(legend.position = 'top', legend.title = element_blank()) +
+    facet_wrap(~variable)
+
+
+#ggplot(signal_df_melt, aes(x = Time, y = value, colour =  variable)) +
+#    geom_line()
+
+
+
+
+  ggsave("2dplot.pdf")
 
 
   #for (i in signal_df[-1]) {
@@ -78,7 +99,8 @@ plotting_3d <- function(signal_df_melt) {
 
 
   #print(as.numeric(as.factor(signal_df_melt$variable)))
-  colours = c('#4b2991', '#c0369d', '#ea4f88', '#fa7876', '#f6a97a')
+  colours <- c('#4b2991', '#c0369d', '#ea4f88', '#fa7876', '#f6a97a')
+
   #colours = ramp.col()
 
   # Under-line area fill, perspective orientation, and labelling

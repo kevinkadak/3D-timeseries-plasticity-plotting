@@ -7,11 +7,13 @@ args <- commandArgs(trailingOnly = TRUE) # Variable containing arguements passed
 #plotOption1 <- readline(prompt = "")
 check_args(args)
 
-library('reshape2')
-library('ggplot2')
-library('plotly')
+library('reshape2') # For reshapping data frame
+library('ggplot2') # For mainly 2D plotting
+library('plotly') #
 library("rgl")
-library('plot3D')
+library('plot3D') # For plotting 3D plot
+
+sig_labels <- c('Coupling Strength', 'Target CS', 'ICC', 'Glutamate Change', 'NMDA Gain')
 
 signal_df <- load_data(args[1])
 chosenOP <- args[2]
@@ -29,7 +31,6 @@ print(head(signal_df))
 
 signal_df_melt <- melt(signal_df, id.vars = c("Time")) # Convert the dataframe into a 3-column str for xyz plotting
 #names(signal_df_melt) <- replace(names(signal_df_melt), names(signal_df_melt), split(signal_df.names, ".")[3])
-#signal_df_melt[['variable']] <- replace(signal_df_melt[['variable']], signal_df.names, c('nu', 'nutilde', 'Ca', 'B', 'gNMDA'))
 #replace(signal_df_melt[['variable']], signal_df.names, split(signal_df.names, ".")[3])
 print(head(signal_df_melt))
 
@@ -39,10 +40,11 @@ print(head(signal_df_melt))
 #
 #
 #
-if (chosenOP == '2D') plotting_2d(signal_df) # Perform ggplot2 2D render
+#if (chosenOP == '2D') plotting_2d(signal_df_melt) # Perform ggplot2 2D render
 
 #----------3D Plot----------#
-#
+# My 3D plot depicts time-series signals, each measuring a different component associated with synaptic plasticity, in 3D space.  Scatter3D provided
+# an invaluable set of tools to modify the nature of the plotted points, as well as the perspective at which the plot is 'viewed'
 #
 #
 #
