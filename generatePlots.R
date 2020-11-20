@@ -13,11 +13,7 @@ library('reshape2') # For reshapping data frame
 library('ggplot2') # For mainly 2D plotting
 library('plot3D') # For plotting 3D plot
 
-#col_palete <- c('#4b2991', '#c0369d', '#ea4f88', '#fa7876', '#f6a97a')
-#col_palete <- c('#4b2991', '#4cc8a3', '#ea4f88', '#d1afe8', '#f6a97a')
-
-#col_palete <- c('#4b2991', '#c0369d', '#eb588e', '#fa7f7d', '#faad7f') # Colour palette to be passedpassed to 3D plot
-col_palete <- c('#4b2991', '#3459a2', '#47bd97', '#83d75d', '#faad7f')
+col_palete <- c('#4b2991', '#c0369d', '#47bd97', '#83d75d', '#ffb224') # Colour palette to be passedpassed to 3D plot
 sig_labels <- c('Coupling Strength', 'Target CS', 'ICC', 'Glutamate Change', 'NMDA Gain') # Items stand for the following:
 # Coupling strength = the strength of the connection between two neurons at the synaptic cleft
 # Target coupling strength = same as above, but as a prediction of coupling strength change in the absence of noise
