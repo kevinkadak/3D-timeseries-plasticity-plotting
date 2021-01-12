@@ -21,7 +21,7 @@ sig_labels <- c('Coupling Strength', 'Target CS', 'ICC', 'Glutamate Change', 'NM
 # Glutamte change = Gluatemate changes in response to (no change in this case)
 # NMDA receptor gain = Measured change in number of NMDA receptors opening, a prelimiary factor of long-term neuronal change (plasticity)
 
-signal_df[2:length(signal_df)] <- scale(signal_df[2:length(signal_df)]) # Scale all columns excluding Time
+signal_df[2:length(signal_df)] <- scale(signal_df[2:length(signal_df)]) # Standardize all columns, excluding Time
 signal_df[is.na(signal_df)] <- 0 # Any instances where values did change and were thus rendered as NaN due to inability to scale() = 0
 
 signal_df_melt <- melt(signal_df, id.vars = c("Time")) # Convert the dataframe into a 3-column str for xyz plotting
