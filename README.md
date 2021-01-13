@@ -1,4 +1,8 @@
 # 3D-timeseries-plasticity-plotting
-Generates 3D render of a variety of plasticity measures over time
+Generates 3D and 2D plots and model fits of a variety of plasticity measures over time.
 
+#3D
+![title](Plots/3d-plot.png)
+
+#2D
 ![title](Plots/3d-plot.png)
